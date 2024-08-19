@@ -8,15 +8,16 @@ type FormProps = {
 };
 
 export default function Form({ dispatch }: FormProps) {
-  const [activity, setActivity] = useState<Activity>({
+  const INITIAL_STATE = {
     category: 1,
     name: "",
     calories: 0,
-  });
+  };
+
+  const [activity, setActivity] = useState<Activity>(INITIAL_STATE);
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>) => {
     const isNumberField = ["category", "calories"].includes(e.target.id);
-    console.log(isNumberField);
     setActivity({
       ...activity,
       [e.target.id]: isNumberField ? +e.target.value : e.target.value,
@@ -32,6 +33,7 @@ export default function Form({ dispatch }: FormProps) {
     e.preventDefault();
     console.log("Submit...");
     dispatch({ type: "save-activity", payload: { newActiviy: activity } });
+    setActivity(INITIAL_STATE);
   };
 
   return (
