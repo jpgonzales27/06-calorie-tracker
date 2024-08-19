@@ -1,8 +1,13 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, FormEvent, Dispatch } from "react";
 import { categories } from "../data/categories";
 import type { Activity } from "../types";
+import type { ActivityActions } from "../reducers/activity-reducers";
 
-export default function Form() {
+type FormProps = {
+  dispatch: Dispatch<ActivityActions>;
+};
+
+export default function Form({ dispatch }: FormProps) {
   const [activity, setActivity] = useState<Activity>({
     category: 1,
     name: "",
@@ -23,8 +28,14 @@ export default function Form() {
     return name.trim() !== "" && calories > 0;
   };
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Submit...");
+    dispatch({ type: "save-activity", payload: { newActiviy: activity } });
+  };
+
   return (
-    <form className="space-y-5 bg-white shadow p-10 rounded-lg">
+    <form className="space-y-5 bg-white shadow p-10 rounded-lg" onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 gap-3">
         <label htmlFor="category" className="font-bold">
           Categoria:
