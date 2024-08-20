@@ -1,14 +1,15 @@
-import { useState, ChangeEvent, FormEvent, Dispatch } from "react";
+import { useState, ChangeEvent, FormEvent, Dispatch, useEffect } from "react";
 import { categories } from "../data/categories";
 import { v4 as uuidv4 } from "uuid";
 import type { Activity } from "../types";
-import type { ActivityActions } from "../reducers/activity-reducers";
+import type { ActivityActions, ActivityState } from "../reducers/activity-reducers";
 
 type FormProps = {
   dispatch: Dispatch<ActivityActions>;
+  state: ActivityState;
 };
 
-export default function Form({ dispatch }: FormProps) {
+export default function Form({ dispatch, state }: FormProps) {
   const INITIAL_STATE = {
     id: uuidv4(),
     category: 1,
@@ -37,6 +38,13 @@ export default function Form({ dispatch }: FormProps) {
     dispatch({ type: "save-activity", payload: { newActiviy: activity } });
     setActivity({ ...INITIAL_STATE, id: uuidv4() });
   };
+
+  useEffect(() => {
+    if (state.activeId) {
+      const seletedActicity = state.activities.filter((stateActivity) => stateActivity.id === state.activeId)[0];
+      setActivity(seletedActicity);
+    }
+  }, [state.activeId]);
 
   return (
     <form className="space-y-5 bg-white shadow p-10 rounded-lg" onSubmit={handleSubmit}>
