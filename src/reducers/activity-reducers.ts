@@ -12,6 +12,9 @@ export type ActivityActions =
   | {
       type: "delete-activity";
       payload: { id: Activity["id"] };
+    }
+  | {
+      type: "restart-activity";
     };
 
 export type ActivityState = {
@@ -60,6 +63,13 @@ export const activityReducer = (state: ActivityState = initialState, action: Act
     return {
       ...state,
       activities: state.activities.filter((activity) => activity.id !== action.payload.id),
+    };
+  }
+
+  if (action.type === "restart-activity") {
+    return {
+      activities: [],
+      activeId: "",
     };
   }
 
