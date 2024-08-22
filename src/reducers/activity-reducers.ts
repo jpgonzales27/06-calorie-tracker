@@ -8,6 +8,10 @@ export type ActivityActions =
   | {
       type: "set-activeId";
       payload: { id: Activity["id"] };
+    }
+  | {
+      type: "delete-activity";
+      payload: { id: Activity["id"] };
     };
 
 export type ActivityState = {
@@ -22,9 +26,21 @@ export const initialState: ActivityState = {
 
 export const activityReducer = (state: ActivityState = initialState, action: ActivityActions) => {
   if (action.type === "save-activity") {
+    //Este codigo manejas la logica para actualizar el state
+    let updateActicities: Activity[] = [];
+
+    if (state.activeId) {
+      updateActicities = state.activities.map((activity) =>
+        activity.id === state.activeId ? action.payload.newActiviy : activity
+      );
+    } else {
+      updateActicities = [...state.activities, action.payload.newActiviy];
+    }
+
     return {
       ...state,
-      activities: [...state.activities, action.payload.newActiviy],
+      activities: updateActicities,
+      activeId: "",
     };
   }
 
@@ -32,6 +48,13 @@ export const activityReducer = (state: ActivityState = initialState, action: Act
     return {
       ...state,
       activeId: action.payload.id,
+    };
+  }
+
+  if (action.type === "delete-activity") {
+    return {
+      ...state,
+      activities: state.activities.filter((activity) => activity.id !== action.payload.id),
     };
   }
 
